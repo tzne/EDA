@@ -1,2 +1,6 @@
-# EDA
+#+TITLE: Estruturas de Dados Avançadas
+#+AUTHOR: Felipe Costa Canteiro
+#+LANGUAGE: pt
+#+OPTIONS: date:nil
+
 Exercícios do curso de Estruturas de Dados Avançadas, ministrado na UFSCar Sorocaba
