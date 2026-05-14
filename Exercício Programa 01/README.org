@@ -1,0 +1,73 @@
+#+title: Exercício Programa 01: Código Morse com Árvore
+#+author: Felipe Costa Canteiro
+#+filetags: exercicios
+#+startup: show2levels
+#+exclude_tags: no_export
+#+export_file_name: EP-01
+#+auto_tangle: t
+#+options: date:nil
+
+* TOC :toc_2:no_export:
+- [[#enunciado][Enunciado]]
+
+* Enunciado
+O propósito desse Exercício-Programa é utilizar uma árvore para armazenar e pesquisar o *Código Morse*, conforme será descrito a seguir.
+O Código Morse pode ser facilmente representado em uma árvore de decisão (binária). Uma árvore de decisão é uma representação para expressar quais decisões levaram a determinado estado, ou seja, que caminho foi seguido para um certo resultado ser obtido.
+
+No Código Morse, cada símbolo do alfabeto é codificado através de pontos (*.*) e traços (*-*) conforme a tabela apresentada a seguir.
+Espaços em branco são utilizados como separadores de símbolos e a / é usada como separador de palavras.
+Por exemplo, a mensagem *ISSO EH UM EXEMPLO* é codificada como:
+#+begin_center
+.. ... ... --- / . .... / ..- -- / . -..- . -- .--. .-.. ---
+#+end_center
+|---------+--------+--------+--------|
+| 0 ----- | A .-   | K -.-  | U ..-  |
+| 1 .---- | B -... | L .-.. | V ...- |
+| 2 ..--- | C -.-. | M --   | W .--  |
+| 3 ...-- | D -..  | N -.   | x -..- |
+| 4 ....- | E .    | O ---  | Y -.-- |
+| 5 ..... | F ..-. | P .--. | Z --.. |
+| 6 -.... | G --.  | Q --.- |        |
+| 7 --... | H .... | R .-.  |        |
+| 8 ---.. | I ..   | S ...  |        |
+| 9 ----. | J .--- | T -    |        |
+|---------+--------+--------+--------|
+
+Devemos construir uma árvore de decisão que represente o alfabeto do Código Morse, contendo as letras e símbolos.
+Os nós desta árvore representam a letra ou símbolo e suas ramificações indicam a decisão tomada (esquerda para "." e direita para "-").
+Cada caminho até a raiz de um nó da árvore representa o código Morse correspondente ao símbolo armazenado nesse nó.
+Desta forma, será possível converter um texto normal para a representação em Código Morse, e vice-versa.
+
+Portanto, sua tarefa consiste em implementar um programa que converta mensagens em texto normal para Código Morse, e vice-versa.
+Para isso, considere duas etapas fundamentais no desenvolvimento:
+  + *Construção da árvore*: implemente um procedimento para construir a árvore, com a raiz vazia, conforme a tabela do Código Morse, que será utilizada na conversão (/Sugestão/: leia o arquivo ~morse.txt~ fornecido com o enunciado do exercício programa). Para cada símbolo, deve-se percorrer a árvore a partir da raiz, seguindo "*.*" (filho à esquerda) e "*-*" (filho à direita), criando novos nós quando necessário, até inserir o símbolo no nó correspondente. Além das funções (inicializar árvore, inserir nó, etc) necessárias para manipulação da estrutura de dados, implemente também um procedimento que imprima a árvore (o código e o símbolo correspondente) usando o percurso "pré-ordem". Por exemplo:
+    #+begin_center
+    .   -> E
+    ..  -> I
+    ... -> S
+    #+end_center
+  + *Conversão da mensagem*: após construir a árvore, o programa deverá ser capaz de converter mensagens de texto normal para Código Morse, e vice-versa. Para isso, implemente dois procedimentos: (1) um que leia uma mensagem (alfanumérica) em texto normal, localize cada caractere na árvore e imprima na tela a mensagem original e sua conversão para Código Morse, isto é, o caminho da raiz até o nó correspondente a cada símbolo; e (2) outro que leia uma mensagem em Código Morse e imprima na tela a mensagem em Código Morse lida e sua transcrição para texto normal. Nesse caso, para cada sequência de "*.*" e "*-*", o programa deve percorrer a árvore a partir da raiz até encontrar o símbolo correspondente.
+
+    A saída do programa deve apresentar claramente a mensagem original e sua respectiva conversão, preservando a separação entre símbolos e palavras conforme o padrão do Código Morse. (/Sugestão/: em ambos os casos, as mensagens podem ser lidas de um arquivo *.txt*, mas também podem ser fornecidas via entrada padrão)
+
+O Exercício-Programa deve ser desenvolvido, *obrigatoriamente*, em linguagem C e em grupo com 3 ou 4 integrantes.
+O código-fonte em linguagem C deve conter um cabeçalho com nomes completos e RAs (registros Acadêmicos) dos integrantes, bastando que apenas um dos integrantes realize a submissão no AVA.
+
+Além do código-fonte, deve ser preparado um vídeo com uma explicação sucinta, porém consistente, da solução implementada, em que cada integrante participa por no máximo 5 minutos, ou seja, o vídeo deve ter duração máxima de 20 minutos.
+É importante que fique evidente que tal explicação foi apresentada pelos integrantes do grupo, e não por terceiros.
+O vídeo pode ser disponibilizado no AVA (Moodle) ou em uma plataforma de /streaming/, como o *YouTube*, e o respectivo /link/ deve ser informado no AVA (Moodle) e também incluído no cabeçalho do código-fonte.
+
+Para a correção do Exercício-Programa, o peso da implementação, em linguagem C, é de 50%, e para o vídeo também é 50%.
+Vale destacar que, a não entrega do vídeo implicará em nota 0 (zero) tanto para o vídeo quanto para a implementação.
+Caso algum integrante não apresenta a nota total será descontada de forma proporcional.
+Por exemplo, em um grupo com 4 integrantes se apenas 2 apresentarem a nota máxima será de 5 pontos (metade dos 10 pontos possíveis).
+
+#+begin_center
+*Recomendações importantes*
+#+end_center
+
+1. A implementação do exercício programa deve ser compatível com o padrão C99, e compilar sem erros usando um compilador GCC (GNU Compiler Collection).
+2. Além do código-fonte em linguagem C e o vídeo, deve ser entregue um arquivo ~.txt~ chamado *README* com instruções de como compilar e executar o programa, e também exemplos de testes realizados (com entradas e saídas).
+3. Não deixe para iniciar a implementação na última hora, como na semana que precede a data limite de entrega
+4. Entregas atrasadas serão permitidas, porém, penalizadas (menos 1 ponto para cada dia de atraso).
+5. Cuidado, pois exercícios programas que forem confirmados como plágio serão penalizados com nota 0 (zero).
