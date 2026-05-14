@@ -21,7 +21,7 @@
 * Enunciado
 Implemente, em linguagem C, uma função que realize o percurso por nível (ou em largura), imprimindo as chaves dos nós na ordem de visita em uma árvore binária. (*Dica*: utilize uma fila)
 
-\newpage
+
 * Estruturas de dados e funções auxiliares
 :PROPERTIES:
 :header-args:c: :tangle "arvore binaria.c" :main no
@@ -68,7 +68,7 @@ int altura(link raiz) {
 }
 
 #+end_src
-\newpage
+
 *** ~link inserir(link raiz, int valor)~
 Função para inserir um elemento na árvore binária 
 #+begin_src C
@@ -202,7 +202,7 @@ int main(void) {
 }
 
 #+end_src
-\newpage
+
 * Resolução
 Antes da implementação principal da função ~percurso_nivel (link raiz)~
 ** Fila 
