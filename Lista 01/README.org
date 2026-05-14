@@ -1,0 +1,348 @@
+#+title: Lista de Exercícios 01: Exercício 2
+#+author: Felipe Costa Canteiro
+#+filetags: exercicios
+#+startup: show2levels
+#+exclude_tags: no_export
+#+export_file_name: Exercicio 01
+#+auto_tangle: t
+#+options: date:nil
+
+* TOC :toc_2:no_export:
+- [[#enunciado][Enunciado]]
+- [[#estruturas-de-dados-e-funções-auxiliares][Estruturas de dados e funções auxiliares]]
+  - [[#struct-node-e-link][~struct node~ e ~link~]]
+  - [[#funções-auxiliares][Funções auxiliares]]
+- [[#resolução][Resolução]]
+  - [[#fila][Fila]]
+  - [[#void-percurso_nivellink-raiz][~void percurso_nivel(link raiz)~]]
+  - [[#main][~main~]]
+  - [[#arquivos-de-biblioteca][Arquivos de biblioteca]]
+
+* Enunciado
+Implemente, em linguagem C, uma função que realize o percurso por nível (ou em largura), imprimindo as chaves dos nós na ordem de visita em uma árvore binária. (*Dica*: utilize uma fila)
+
+\newpage
+* Estruturas de dados e funções auxiliares
+:PROPERTIES:
+:header-args:c: :tangle "arvore binaria.c" :main no
+:END:
+No material disponibilizado, as seguintes estruturas de dados foram apresentadas.
+** ~struct node~ e ~link~
+#+begin_src C :tangle "arvore binaria.h"
+
+#ifndef ARVOREBINARIA_H
+#define ARVOREBINARIA_H
+
+// Definição do tipo link como ponteiro para struct node
+typedef struct node* link;
+
+// Definição da estrutura node
+struct node{ 
+    int chave; 
+    link esquerda; // Ponteiro para filho esquerdo (subárvore)
+    link direita; // Ponteiro para filho direito (subárvore)
+};
+
+#+end_src
+
+** Funções auxiliares
+*** ~int altura(link raiz)~
+Função para determinar a altura da árvore binária
+#+begin_src C :includes '(<stdio.h> <stdlib.h> "arvore binaria.h") 
+
+int altura(link raiz) {
+    // Convenção comum: árvore com 1 nó terá altura 0
+    if (raiz == NULL) // Caso base: árvore vazia tem altura -1
+        return -1;
+
+    // Calcula recursivamente a altura da subárvore esquerda
+    int hEsquerda = altura(raiz->esquerda); 
+    // Calcula recursivamente a altura da subárvore direita
+    int hDireita = altura(raiz->direita);
+
+    // Retorna a maior altura entre as subárvores + 1 (nível da raiz)
+    if (hEsquerda > hDireita) 
+        return hEsquerda + 1; // Altura da subárvore esquerda maior
+    else
+        return hDireita + 1; // Altura da subárvore direita maior
+}
+
+#+end_src
+\newpage
+*** ~link inserir(link raiz, int valor)~
+Função para inserir um elemento na árvore binária 
+#+begin_src C
+
+link inserir(link raiz, int valor) {
+    // Caso base: encontrou posição vazia e cria novo nó para a árvore
+    if (raiz == NULL) {
+        raiz = malloc(sizeof(struct node)); // Aloca memória
+        raiz->chave = valor;                // Armazena o valor
+        raiz->esquerda = NULL;                   // Inicializa filho esquerdo
+        raiz->direita = NULL;                   // Inicializa filho direito
+        return raiz;                        // Retorna o novo nó
+    }
+
+    // Estratégia de inserção:
+    // escolhe a subárvore com menor (ou igual) altura
+    // para tentar manter a árvore balanceada
+    if (altura(raiz->esquerda) <= altura(raiz->direita))
+        // Insere recursivamente na subárvore esquerda
+        raiz->esquerda = inserir(raiz->esquerda, valor);
+    else
+        // Insere recursivamente na subárvore direita
+        raiz->direita = inserir(raiz->direita, valor);
+
+    return raiz; // Retorna a raiz atualizada
+}
+
+#+end_src
+*** ~void percursoPreOrdem(link raiz)~
+Função para o percurso pré-ordem
+#+begin_src C
+
+void percursoPreOrdem(link raiz) {
+     if (raiz != NULL) { // Verifica se a árvore é vazia
+        printf("%i ", raiz->chave);  // Visita a raiz
+        percursoPreOrdem(raiz->esquerda); // Percorre a subárvore esquerda
+        percursoPreOrdem(raiz->direita); // Percorre a subárvore direita  
+     }
+}
+
+#+end_src
+*** ~void percursoInOrdem(link raiz)~
+Função para o percurso in-ordem
+#+begin_src C
+
+void percursoInOrdem(link raiz) {
+     if (raiz != NULL) { // Verifica se a árvore é vazia
+        percursoInOrdem(raiz->esquerda); // Percorre a subárvore esquerda
+        printf("%i ", raiz->chave); // Visita a raiz
+        percursoInOrdem(raiz->direita); // Percorre a subárvore direita   
+     }
+}
+
+#+end_src
+*** ~void percursoPosOrdem(link raiz)~
+Função para o percurso pós-ordem
+#+begin_src C
+
+void percursoPosOrdem(link raiz) {
+     if (raiz != NULL) { // Verifica se a árvore é vazia
+        percursoPosOrdem(raiz->esquerda); // Percorre a subárvore esquerda
+        percursoPosOrdem(raiz->direita); // Percorre a subárvore direita
+        printf("%i ", raiz->chave);  // Visita a raiz
+     }
+}
+
+#+end_src
+*** ~void imprimirPreOrdem(link raiz)~
+Função para visualização unidimensional da árvore binária
+#+begin_src C
+
+void imprimirPreOrdem(link raiz) {
+     printf("(");
+     if (raiz != NULL) {
+        printf("%i ", raiz->chave);
+        imprimirPreOrdem(raiz->esquerda);
+        imprimirPreOrdem(raiz->direita);    
+     }
+     printf(")");
+}
+
+#+end_src
+*** ~void imprimirInOrdem(link p, int b)~
+Função para visualização bidimensional da árvore binária
+#+begin_src C
+
+void imprimirInOrdem(link p, int b) {
+     int i;
+     if (p == NULL) {
+        for (i = 0; i < b; i++) printf("-----");
+        printf("NULL\n");
+        return;
+     }
+     imprimirInOrdem(p->direita, b + 1);
+     for (i = 0; i < b; i++) printf("-----");
+     printf("%i\n", p->chave);
+     imprimirInOrdem(p->esquerda, b + 1);
+}
+
+#+end_src
+*** ~int main(void)~
+Função principal para apresentação, não utilizada
+#+begin_src C :tangle no
+
+int main(void) {
+    link Arvore = NULL; // Inicializar a Árvore Binária (AB) vazia
+ 
+    Arvore = inserir(Arvore, 50); // Inserir 50 na AB
+    Arvore = inserir(Arvore, 40); // Inserir 40 na AB
+    Arvore = inserir(Arvore, 60); // Inserir 60 na AB
+    Arvore = inserir(Arvore, 35); // Inserir 35 na AB
+    Arvore = inserir(Arvore, 45); // Inserir 45 na AB
+    Arvore = inserir(Arvore, 55); // Inserir 55 na AB
+    Arvore = inserir(Arvore, 65); // Inserir 65 na AB
+
+    printf("\nVisualização da Árvore Binária em 1D:\n\n");
+    imprimirPreOrdem(Arvore); // Visualização unidimensional
+    printf("\n\nVisualização da Árvore Binária em 2D:\n\n");
+    imprimirInOrdem(Arvore, 0); // Visualização bidimensional
+    
+    printf("\nPercurso Pré-Ordem: ");
+    percursoPreOrdem(Arvore); // Percurso pré-ordem
+    
+    printf("\nPercurso In-Ordem:  ");
+    percursoInOrdem(Arvore); // Percurso in-ordem
+    
+    printf("\nPercurso Pós-Ordem: ");
+    percursoPosOrdem(Arvore); // Percurso pós-ordem
+
+    return 0;
+}
+
+#+end_src
+\newpage
+* Resolução
+Antes da implementação principal da função ~percurso_nivel (link raiz)~
+** Fila 
+O enunciado sugere que se utilize uma fila
+
+#+begin_src C :tangle fila.h :main no
+#ifndef FILA_H
+#define FILA_H
+
+typedef struct {
+  link nos[100];
+  int proximo;
+  int anterior;
+} Fila;
+
+#+end_src
+*** Funções auxiliares
+:PROPERTIES:
+:header-args:C: :tangle "fila.c" :main no
+:END:
+**** ~void inicializar fila~
+#+begin_src C :includes '(<stdio.h> <stdlib.h> "arvore binaria.h" "fila.h") 
+
+void inicializarFila(Fila *f) {
+    f->proximo = 0;
+    f->anterior = 0;
+}
+
+#+end_src
+**** ~void colocar_na_fila(Fila *f, link no)~
+Função para inserir um nó (~link~) no final da fila.
+#+begin_src C
+
+void colocar_na_fila(Fila *f, link no) {
+  f->nos[f->anterior] = no;
+  f->anterior++;
+}
+
+#+end_src
+**** ~link tirar_da_fila(Fila *f)~
+Remove e retorna o nó do início da fila.
+#+begin_src C
+
+link tirar_da_fila(Fila *f) {
+  link no_removido = f->nos[f->proximo];
+  f->proximo++;
+
+  return no_removido;
+}
+
+#+end_src
+
+**** ~int fila_vazia(Fila f)~
+Retorna 1 se a fila estiver vazia ou 0 caso contrário
+#+begin_src C
+
+int fila_vazia(Fila *f) {
+  return (f->proximo == f->anterior);
+}
+
+#+end_src
+
+** ~void percurso_nivel(link raiz)~
+:PROPERTIES:
+:header-args:C: :tangle "main.c" :main no
+:END:
+Função que implementa o percurso por nível, imprimindo as chaves dos nós na ordem de visita em uma árvore binária.
+
+#+begin_src C :includes '(<stdio.h> <stdlib.h> "arvore binaria.h" "fila.h")
+void percurso_nivel(link raiz) {
+  if (raiz == NULL) return;
+
+  Fila fila;
+  inicializarFila(&fila);
+
+  colocar_na_fila(&fila, raiz);
+
+  while (!fila_vazia(&fila)) {
+    link no_processamento = tirar_da_fila(&fila);
+    printf("%d ", no_processamento->chave);
+
+    if (no_processamento->esquerda != NULL) colocar_na_fila(&fila, no_processamento->esquerda);
+    if (no_processamento->direita != NULL) colocar_na_fila(&fila, no_processamento->direita);
+
+  }
+
+  return;
+}
+#+end_src
+
+** ~main~
+:PROPERTIES:
+:header-args:C: :tangle "main.c" :main no
+:END:
+#+begin_src C 
+
+int main(void) {
+    link Arvore = NULL; // Inicializar a Árvore Binária (AB) vazia
+ 
+    Arvore = inserir(Arvore, 50); // Inserir 50 na AB
+    Arvore = inserir(Arvore, 40); // Inserir 40 na AB
+    Arvore = inserir(Arvore, 60); // Inserir 60 na AB
+    Arvore = inserir(Arvore, 35); // Inserir 35 na AB
+    Arvore = inserir(Arvore, 45); // Inserir 45 na AB
+    Arvore = inserir(Arvore, 55); // Inserir 55 na AB
+    Arvore = inserir(Arvore, 65); // Inserir 65 na AB
+
+    percurso_nivel(Arvore);
+
+    return 0;
+}
+
+#+end_src
+** Arquivos de biblioteca
+*** fila.h
+:PROPERTIES:
+:header-args:C: :tangle "fila.h" :main no
+:END:
+#+begin_src C
+
+void inicializarFila(Fila *f);
+void colocar_na_fila(Fila *f, link no);
+link tirar_da_fila(Fila *f);
+int fila_vazia(Fila *f);
+
+#endif
+#+end_src
+*** arvore binaria.h
+:PROPERTIES:
+:header-args:C: :tangle "arvore binaria.h" :main no
+:END:
+#+begin_src C
+
+int altura(link raiz);
+link inserir(link raiz, int valor);
+void percursoPreOrdem(link raiz);
+void percursoInOrdem(link raiz);
+void percursoPosOrdem(link raiz);
+void imprimirPreOrdem(link raiz);
+void imprimirInOrdem(link p, int b);
+
+#endif
+#+end_src
